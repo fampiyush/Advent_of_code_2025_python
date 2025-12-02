@@ -31,9 +31,45 @@ def day2_part1():
     return sum
 
 def day2_part2():
-    pass
+    ranges = []
+    try:
+        with open(input_file_path, 'r') as file:
+            content = file.read()
+            ranges = content.split(",")
+    except FileNotFoundError:
+        print(f"Error: The file '{input_file_path}' was not found.")
+
+    sum = 0
+
+    # ranges = example_input.split(",")
+
+    for ran in ranges:
+        start, end = ran.split("-")
+        
+        for i in range(int(start), int(end)+1):
+            str_i = str(i)
+            if len(str_i) > 1 and check_repeating(str_i):
+                sum += i
+    
+    return sum
+
+def check_repeating(value):
+    curr_pattern = value[0]
+    i = 1
+
+    while(i < len(value)):
+        if curr_pattern == value[i:i+len(curr_pattern)]:
+            i += len(curr_pattern)
+        else:
+            curr_pattern = value[:i+1]
+            if len(curr_pattern) > len(value)//2:
+                return False
+
+            i += 1
+    
+    return True
 
 if __name__ == "__main__":
-    result = day2_part1()
-    # result = day2_part2()
+    # result = day2_part1()
+    result = day2_part2()
     print(result)
