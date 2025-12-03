@@ -44,9 +44,38 @@ def get_largest_two(value):
     return final
 
 def day3_part2():
-   pass
+    banks = []
+
+    try:
+        with open(input_file_path, 'r') as file:
+            content = file.read()
+            banks = content.split("\n")
+    except FileNotFoundError:
+        print(f"Error: The file '{input_file_path}' was not found.")
+
+    # banks = example_input.split("\n")
+    sum = 0
+
+    for bank in banks:
+        sum += get_largest_twelve(bank)
+
+
+    return sum
+
+def get_largest_twelve(value):
+    result = []
+    remaining = 12
+    
+    for i, digit in enumerate(value):
+        while result and result[-1] < digit and len(value) - i + len(result) > remaining:
+            result.pop()
+        
+        if len(result) < remaining:
+            result.append(digit)
+    
+    return int(''.join(result))
 
 if __name__ == "__main__":
-    result = day3_part1()
-    # result = day3_part2()
+    # result = day3_part1()
+    result = day3_part2()
     print(result)
