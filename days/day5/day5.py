@@ -1,5 +1,4 @@
 import os
-from queue import Queue
 
 input_file_path = os.path.join(os.path.dirname(__file__), 'day5.txt')
 
