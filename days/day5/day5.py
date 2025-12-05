@@ -68,11 +68,42 @@ def merge_bounds(bounds):
 
 
 def day5_part2():
-    pass
+    inputs = []
+
+    try:
+        with open(input_file_path, 'r') as file:
+            content = file.read()
+            inputs = content.split("\n\n")
+    except FileNotFoundError:
+        print(f"Error: The file '{input_file_path}' was not found.")
+
+    # inputs = example_input.split("\n\n")
+
+    ranges, availables = inputs
+
+    ranges = ranges.split("\n")
+
+    bounds = []
+
+    for range in ranges:
+        low, high = range.split("-")
+        bounds.append([int(low), int(high)])
+
+    bounds.sort(key=lambda bound: bound[0])
+    
+    bounds = merge_bounds(bounds)
+    
+    total_fresh = 0
+
+    
+    for low, high in bounds:
+        total_fresh += (high-low+1)
+    
+    return total_fresh
 
 
 
 if __name__ == "__main__":
-    result = day5_part1()
-    # result = day5_part2()
+    # result = day5_part1()
+    result = day5_part2()
     print(result)
