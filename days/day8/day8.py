@@ -37,10 +37,11 @@ class DSU:
         parenti = self.find(i)
         parentj = self.find(j)
 
-        if parenti == parentj:
-            return
+        if parenti == parentj: # returns true of false for checking unconnected junctions
+            return False
 
         self.parents[parenti] = self.parents[parentj]
+        return True
 
 def day8_part1():
     inputs = []
@@ -83,9 +84,41 @@ def day8_part1():
 
 
 def day8_part2():
-    pass
+    inputs = []
+
+    try:
+        with open(input_file_path, 'r') as file:
+            content = file.read()
+            inputs = content.split("\n")
+    except FileNotFoundError:
+        print(f"Error: The file '{input_file_path}' was not found.")
+
+    # inputs = example_input.split("\n")
+
+    inputs = [[int(val) for val in values.split(',')] for values in inputs]
+
+    dsu = DSU(len(inputs))
+
+    distances = [] # [[dist, i, j]]
+
+    for i in range(len(inputs)):
+        for j in range(i+1, len(inputs)):
+            dist = ((inputs[i][0]-inputs[j][0])**2 + (inputs[i][1]-inputs[j][1])**2 + (inputs[i][2]-inputs[j][2])**2) ** 0.5
+            distances.append([dist, i, j])
+
+    distances.sort(key=lambda dist: dist[0])
+    
+    result = None
+
+    for dist in distances:
+        unconnected = dsu.union(dist[1], dist[2])
+
+        if unconnected:
+            result = inputs[dist[1]][0]*inputs[dist[2]][0]
+
+    return result
 
 if __name__ == "__main__":
-    result = day8_part1()
-    # result = day8_part2()
+    # result = day8_part1()
+    result = day8_part2()
     print(result)
