@@ -1,4 +1,6 @@
 import os
+import numpy as np
+from scipy.optimize import milp, LinearConstraint, Bounds
 import time
 
 input_file_path = os.path.join(os.path.dirname(__file__), 'day10.txt')
@@ -81,13 +83,55 @@ def day10_part1():
     
 
 def day10_part2():
-    pass
+    inputs = []
+
+    try:
+        with open(input_file_path, 'r') as file:
+            content = file.read()
+            inputs = content.split("\n")
+    except FileNotFoundError:
+        print(f"Error: The file '{input_file_path}' was not found.")
+
+    # inputs = example_input.split("\n")
+    machines = []
+
+    for inp in inputs:
+        machines.append(Machine(inp))
+    
+    total_press = 0
+
+    for machine in machines:
+        total_press += lp(machine)
+
+    return total_press
+    
+
+def lp(machine):
+    n = len(machine.joltages)
+    m = len(machine.buttons)
+
+    A = np.zeros((n, m), dtype=int)
+    for j, button in enumerate(machine.buttons):
+        for btn in button:
+            A[btn, j] = 1
+    
+    c = np.ones(m, dtype=float)
+
+    lc = LinearConstraint(A, lb=machine.joltages, ub=machine.joltages)
+
+    bounds = Bounds(lb=0, ub=np.inf)
+
+    integrality = np.ones(m, dtype=int)
+
+    res = milp(c=c, constraints=[lc], bounds=bounds, integrality=integrality)
+
+    return int(round(res.fun))
 
 if __name__ == "__main__":
     start_time = time.time()
 
-    result = day10_part1()
-    # result = day10_part2()
+    # result = day10_part1()
+    result = day10_part2()
     
     end_time = time.time()
     print(f"Execution Time: {(end_time - start_time)*1000} milliseconds")
